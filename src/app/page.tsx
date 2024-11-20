@@ -5,6 +5,7 @@ export default function Home() {
     <div>
     <h1>Setup of next and shad cn ui</h1>
     <Button>Click me</Button>
+    <Button>Nafiul branch me</Button>
   </div>
   );
 }
