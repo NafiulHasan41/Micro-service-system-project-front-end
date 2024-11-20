@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from "react"
+import React, { Dispatch, SetStateAction, useState } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
@@ -37,7 +37,7 @@ const FormSchema = z.object({
     .min(6, { message: "Password must be at least 6 characters long" }),
 })
 
-export default function Registration() {
+export default function Registration({setToggle} : {setToggle: Dispatch<SetStateAction<boolean>>}) {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -60,14 +60,14 @@ export default function Registration() {
 
   return (
     <div className=" w-[350px] md:w-[380px] rounded-2xl mx-auto p-5 md:p-7 border shadow-2xl ">
-        {/* social login */}
+        {/* social register */}
         <div className=" pb-3 border-b border-black" >
-           <h1 className=" text-xl md:text-2xl font-bold text-black text-center">Login in with</h1>
+           <h1 className=" text-xl md:text-2xl font-bold text-black text-center">Register  with</h1>
            <div className=" flex gap-2 justify-center">
                 <button className=" border shadow-2xl text-white p-3 rounded-md mt-2"><FcGoogle /></button>
                 <button className=" border shadow-2xl text-sky-500 p-3 rounded-md mt-2"><FaFacebook /></button>
            </div>
-           <h1 className=" text-xs md:text-[14px] mt-3 font-bold text-gray-500 text-center">or use your email/phone password</h1>
+           <h1 className=" text-xs md:text-[14px] mt-3 font-bold text-gray-500 text-center">OR use Email or Phone number to Register</h1>
         </div>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-6 mt-2">
@@ -77,7 +77,7 @@ export default function Registration() {
             name="emailOrPhone"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Email or Phone : </FormLabel>
+                <FormLabel>Email or Phone  </FormLabel>
                 <FormControl>
                   <Input placeholder="Enter your email or phone" {...field} />
                 </FormControl>
@@ -91,7 +91,7 @@ export default function Registration() {
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Password : </FormLabel>
+                <FormLabel>Password  </FormLabel>
                 <FormControl>
                     <div className=" relative">
                     <Input type={eye ? "password" : "text" } placeholder="Enter your password" {...field} />
@@ -107,11 +107,12 @@ export default function Registration() {
             )}
           />
           {/* Submit Button */}
-          <Button type="submit" className=" bg-sky-400 w-full text-[16px] shadow-lg shadow-sky-100 font-bold text-black hover:bg-sky-100">Login</Button>
+          <Button type="submit" className=" bg-sky-400 w-full text-[16px] shadow-lg shadow-sky-100 font-bold text-black hover:bg-sky-100">Register</Button>
         </form>
       </Form>
+      <h1 className=" text-xs md:text-[14px] mt-5 font-bold text-gray-500 text-center">You can modify your profile in dashboard</h1>
       <div>
-        <p className="text-center mt-6 text-gray-500">{`Don't have an account? `} <button  className="text-sky-400 underline">Sign up here</button></p>
+        <p className="text-center mt-2 text-gray-500">{`Have an account? `} <button onClick={() => setToggle(false)}  className="text-sky-400 underline">Login here</button></p>
       </div>
     </div>
   )

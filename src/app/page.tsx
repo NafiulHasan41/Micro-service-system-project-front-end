@@ -1,14 +1,14 @@
-'use client'
-import Login from "@/components/authentication/Login";
-import Registration from "@/components/authentication/Registration";
+import HybridAuthentication from "@/components/authentication/HybridAuthentication";
+
+
 
 
 export default function Home() {
   
+ 
   return (
     <div>
-     <Login/>
-     <Registration/>
+    <HybridAuthentication/>
     </div>
   );
 }
