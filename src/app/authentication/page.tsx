@@ -3,12 +3,13 @@ import HybridAuthentication from "@/components/authentication/HybridAuthenticati
 
 
 
-export default function Home() {
+export default function page() {
   
  
   return (
     <div>
-         This is the home page. We are working on it
+    <HybridAuthentication/>
+    <HybridAuthentication/>
     </div>
   );
 }
