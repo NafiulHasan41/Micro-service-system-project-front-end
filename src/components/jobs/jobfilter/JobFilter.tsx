@@ -1,8 +1,9 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import React, { useState, useRef, useEffect } from "react";
-import { Checkbox } from "../ui/checkbox";
-import { Button } from "../ui/button";
+
 
 interface JobFilterProps {
     availableTags: string[]; // List of available tags
