@@ -9,7 +9,7 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar,  AvatarImage } from "@/components/ui/avatar";
 
 import { Button } from "../ui/button";
 import { MapPin } from 'lucide-react';
@@ -45,11 +45,11 @@ export default function JobCard({
     postedTime,
 }: JobCardProps) {
     return (
-        <Card
+        <Card key={id}
             className={`w-[400px] m-2 border p-1 rounded-lg shadow-lg transition-all hover:shadow-xl ${type === "community" ? "bg-green-100" : ""
                 }`}
         >
-            <CardHeader className="h-min-[200px]" >
+            <CardHeader key={posterId} className="h-min-[200px]" >
                 <div className="flex items-center justify-between gap-2 rounded-[8px]">
                     <div className="avatar rounded-full min-h-11 min-w-11 bg-green-100 text-white fond-[700]
                     flex items-center justify-center hover:bg-green-500 cursor-pointer">
@@ -80,7 +80,7 @@ export default function JobCard({
                 <div className="flex gap-1 flex-wrap">
                     {tags.map((tag, index) => (
                         <p key={index}
-                            className="text-xs text-gray-500 px-2 bg-gray-200 rounded-xl">
+                            className="text-xs text-black px-2 bg-gray-200 rounded-xl">
                             {tag}
                         </p>
                     ))
@@ -95,7 +95,7 @@ export default function JobCard({
                 ) : (
                     <div className="w-16" />
                 )}
-                <Button>Apply</Button>
+                <Button className=" hover:bg-sky-100 hover:scale-110 bg-sky-300 text-black font-semibold" >Apply</Button>
             </CardFooter>
         </Card>
     );

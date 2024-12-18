@@ -1,7 +1,5 @@
 
 
-import JobCard from "@/components/jobcard/JobCard";
-
 
 export default function Home() {
   
