@@ -46,7 +46,7 @@ export default function JobCard({
 }: JobCardProps) {
     return (
         <Card key={id}
-            className={`w-[400px] m-2 border p-1 rounded-lg shadow-lg transition-all hover:shadow-xl ${type === "community" ? "bg-green-100" : ""
+            className={`md:w-[400px] w-[300px] m-2 border p-1 rounded-lg shadow-lg transition-all hover:shadow-xl ${type === "community" ? "bg-green-100" : ""
                 }`}
         >
             <CardHeader key={posterId} className="h-min-[200px]" >
