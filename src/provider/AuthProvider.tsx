@@ -17,7 +17,7 @@ export interface User {
 interface AuthContextProps {
   user: User | null;
   loading: boolean;
-  createUser: (name: string, email: string, phone: string , password: string , imageURL: string) => Promise<void>;
+  createUser: (name: string, emailOrPhone: string , password: string ) => Promise<void>;
   signIn: (identifier: string, password: string) => Promise<void>;
   logOut: () => void;
 }
@@ -36,11 +36,22 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const API_URL = process.env.NEXT_PUBLIC_API_URL ;
 
-  const createUser = async (name: string, email: string, phone: string , password: string, imageURL: string): Promise<void> => {
+  const createUser = async (name: string, emailOrPhone: string , password: string, ): Promise<void> => {
+    const isPhone = /^01[35789]\d{8}$/.test(emailOrPhone);
+   
     setLoading(true);
     try {
-      const response = await axios.post(`${API_URL}/api/users/register`, { name, email, phone, password, imageURL });
-      setUser(response.data);
+      if(isPhone)
+      {
+        const response = await axios.post(`${API_URL}/api/users/register`, { name, phone: emailOrPhone , password });
+        setUser(response.data);
+      }
+      else
+      {
+        const response = await axios.post(`${API_URL}/api/users/register`, { name, email: emailOrPhone , password });
+        setUser(response.data);
+      }
+      
     } catch (error) {
       if (axios.isAxiosError(error)) {
         showToast("error", (error.response?.data as { message?: string })?.message || "An error occurred");
