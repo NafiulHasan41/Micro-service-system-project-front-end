@@ -73,14 +73,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       localStorage.setItem("token", response.data.token); 
       setUser(response.data?.data);
     } catch (error) {
- 
-      if (axios.isAxiosError(error)) {
-        showToast("error", (error.response?.data as { message?: string })?.message || "An error occurred");
-      } else if (error instanceof Error) {
-        showToast("error", error.message);
-      } else {
-        showToast("error", "An unknown error occurred while login");
-      }
+      throw error;
     } finally {
       setLoading(false);
     }

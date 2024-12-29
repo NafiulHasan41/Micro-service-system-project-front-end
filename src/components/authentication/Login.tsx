@@ -1,6 +1,6 @@
 "use client"
 
-import React, { Dispatch, SetStateAction, useState } from "react"
+import React, { Dispatch, SetStateAction, useContext, useState } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
@@ -18,6 +18,10 @@ import {
 import { Input } from "@/components/ui/input"
 import { FcGoogle } from "react-icons/fc"
 import { FaEye, FaEyeSlash, FaFacebook } from "react-icons/fa"
+import { AuthContext } from "@/provider/AuthProvider"
+import { useRouter } from "next/navigation"
+import useToast from "@/hooks/useToast"
+import axios from "axios"
 
 
 const FormSchema = z.object({
@@ -27,17 +31,28 @@ const FormSchema = z.object({
         message: "Email or phone is required"})
     .refine(
       (value) =>
-        /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) || /^[0-9]{10,15}$/.test(value),
+        /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) || /^01[35789]\d{8}$/.test(value),
       {
         message: "Enter a valid email address or phone number",
       }
     ),
   password: z
     .string()
-    .min(6, { message: "Password must be at least 6 characters long" }),
+    .min(8, { message: "Password must be at least 8 characters long" }),
 })
 
 export default function Login({setToggle} : {setToggle: Dispatch<SetStateAction<boolean>>}) {
+  
+  const authContext = useContext(AuthContext);
+  if (!authContext) {
+    throw new Error("AuthContext must be used within an AuthProvider");
+  }
+
+  const { signIn , user } = authContext;
+  const router = useRouter();
+  const showToast = useToast();
+  const [uploading, setUploading] = useState(false);
+  
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -46,7 +61,7 @@ export default function Login({setToggle} : {setToggle: Dispatch<SetStateAction<
     },
   })
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
+  async function onSubmit(data: z.infer<typeof FormSchema>) {
     toast({
       title: "You submitted the following values:",
       description: (
@@ -55,6 +70,27 @@ export default function Login({setToggle} : {setToggle: Dispatch<SetStateAction<
         </pre>
       ),
     })
+    try {
+      setUploading(true);
+      await signIn(data.emailOrPhone, data.password);
+      showToast("success", "Login successful");
+      setUploading(false);
+       if (user?.role === "admin") {
+        router.push("/dashboard");
+       
+      } else {
+        router.push("/");
+      }
+    } catch (error) {
+      setUploading(false);
+      if (axios.isAxiosError(error)) {
+        showToast("error", (error.response?.data as { message?: string })?.message || "An error occurred");
+      } else if (error instanceof Error) {
+        showToast("error", error.message);
+      } else {
+        showToast("error", "An unknown error occurred");
+      }
+    }
   }
   const [ eye , setEye] = useState(true);
 
@@ -107,7 +143,13 @@ export default function Login({setToggle} : {setToggle: Dispatch<SetStateAction<
             )}
           />
           {/* Submit Button */}
-          <Button type="submit" className=" bg-sky-400 w-full text-[16px] shadow-lg shadow-sky-100 font-bold text-black hover:bg-sky-100">Login</Button>
+          <Button
+                   type="submit"
+                   className="bg-sky-400 w-full text-[16px] shadow-lg shadow-sky-100 font-bold text-black hover:bg-sky-100"
+                   disabled={uploading}
+                 >
+                   {uploading ? "Loading..." : "Login"}
+         </Button>
         </form>
       </Form>
       <div>
