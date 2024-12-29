@@ -33,7 +33,8 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const showToast = useToast();
-
+  
+  
   const API_URL = process.env.NEXT_PUBLIC_API_URL ;
 
   const createUser = async (name: string, emailOrPhone: string , password: string, ): Promise<void> => {
@@ -44,22 +45,21 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       if(isPhone)
       {
         const response = await axios.post(`${API_URL}/api/users/register`, { name, phone: emailOrPhone , password });
-        setUser(response.data);
+        localStorage.setItem("token", response.data.token); 
+        setUser(response.data?.data);
+        
       }
       else
       {
         const response = await axios.post(`${API_URL}/api/users/register`, { name, email: emailOrPhone , password });
-        setUser(response.data);
+        localStorage.setItem("token", response.data.token); 
+        setUser(response.data?.data);
+        
       }
       
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        showToast("error", (error.response?.data as { message?: string })?.message || "An error occurred");
-      } else if (error instanceof Error) {
-        showToast("error", error.message);
-      } else {
-        showToast("error", "An unknown error occurred");
-      }
+    
+      throw error;
       
     } finally {
       setLoading(false);
@@ -71,8 +71,9 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     try {
       const response = await axios.post(`${API_URL}/api/users/login`, { identifier, password });
       localStorage.setItem("token", response.data.token); 
-      setUser(response.data);
+      setUser(response.data?.data);
     } catch (error) {
+ 
       if (axios.isAxiosError(error)) {
         showToast("error", (error.response?.data as { message?: string })?.message || "An error occurred");
       } else if (error instanceof Error) {
@@ -97,13 +98,22 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       const token = localStorage.getItem("token");
       if (token) {
         try {
-          const response = await axios.get(`${API_URL}/api/users/me`, {
+          setLoading(true);
+          const response = await axios.get(`${API_URL}/api/users/auth/me`, {
             headers: { Authorization: `Bearer ${token}` },
           });
           setUser(response.data);
         } catch (error) {
-          console.error("Token validation error:", error);
+
+          if (axios.isAxiosError(error)) {
+            showToast("error", (error.response?.data as { message?: string })?.message || "An error occurred");
+          } else if (error instanceof Error) {
+            showToast("error", error.message);
+          } else {
+            showToast("error", "An unknown error occurred while login");
+          }
           logOut();
+          setLoading(false);
         }
       }
       setLoading(false);

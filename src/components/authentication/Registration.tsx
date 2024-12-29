@@ -4,8 +4,6 @@ import React, { Dispatch, SetStateAction, useContext, useState } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
-
-import { toast } from "@/hooks/use-toast"
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -21,6 +19,7 @@ import { FaEye, FaEyeSlash, FaFacebook } from "react-icons/fa"
 import { AuthContext } from "@/provider/AuthProvider"
 import useToast from "@/hooks/useToast"
 import { useRouter } from "next/navigation"
+import axios from "axios"
 
 
 const FormSchema = z.object({
@@ -76,14 +75,7 @@ export default function Registration({setToggle} : {setToggle: Dispatch<SetState
   })
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    })
+  
 
     try {
       setUploading(true);
@@ -98,12 +90,14 @@ export default function Registration({setToggle} : {setToggle: Dispatch<SetState
         router.push("/");
       }
     } catch (error) {
-      if (error instanceof Error) {
-        showToast("error", error?.message); 
-     } else {
+      if (axios.isAxiosError(error)) {
+        showToast("error", (error.response?.data as { message?: string })?.message || "An error occurred");
+      } else if (error instanceof Error) {
+        showToast("error", error.message);
+      } else {
         showToast("error", "An unknown error occurred");
-     }
-     console.error(error);
+      }
+      
     } finally {
       setUploading(false);
     }
