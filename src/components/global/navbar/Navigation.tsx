@@ -39,16 +39,7 @@ export default function Navigation() {
                       </div>
                     </Link>
                   </li>
-                  <li>
-                    <Link href="/projects" passHref>
-                      <div className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
-                        <div className="text-sm font-medium leading-none">Browse Projects</div>
-                        <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                          Find the right project for you
-                        </p>
-                      </div>
-                    </Link>
-                  </li>
+                 
           
                 </ul>
               </NavigationMenuContent>

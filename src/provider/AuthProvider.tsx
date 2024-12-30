@@ -80,10 +80,17 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   const logOut = () => {
-    localStorage.removeItem("token");
-    showToast(  "success" ,"Logged out successfully");
-    setUser(null);
-    router.push("/authentication");
+    try{
+      localStorage.removeItem("token");
+      showToast(  "success" ,"Logged out successfully");
+      setUser(null);
+      router.push("/authentication");
+    }
+    catch(error)
+    {
+      throw error;
+    }
+  
   };
 
   useEffect(() => {
