@@ -1,11 +1,9 @@
 "use client"
 
-import React, { Dispatch, SetStateAction, useState } from "react"
+import React, { Dispatch, SetStateAction, useContext, useState } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
-
-import { toast } from "@/hooks/use-toast"
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -18,45 +16,93 @@ import {
 import { Input } from "@/components/ui/input"
 import { FcGoogle } from "react-icons/fc"
 import { FaEye, FaEyeSlash, FaFacebook } from "react-icons/fa"
+import { AuthContext } from "@/provider/AuthProvider"
+import useToast from "@/hooks/useToast"
+import { useRouter } from "next/navigation"
+import axios from "axios"
 
 
 const FormSchema = z.object({
+  name: z.string().min(1, { message: "Name is required" })
+  ,
   emailOrPhone: z
     .string()
     .min( 1 ,{
         message: "Email or phone is required"})
     .refine(
       (value) =>
-        /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) || /^[0-9]{10,15}$/.test(value),
+        /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) || /^01[35789]\d{8}$/.test(value),
       {
-        message: "Enter a valid email address or phone number",
+        message: "Enter a valid email address or Bangladesh phone number",
       }
     ),
   password: z
     .string()
-    .min(6, { message: "Password must be at least 6 characters long" }),
+    .min(8, { message: "Password must be at least 8 characters long" }),
+  confirmPassword: z
+    .string()
+    .min(8, { message: "Confirm Password must be at least 8 characters long" }),
+  
 })
+.refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords do not match",
+  path: ["confirmPassword"],
+});
 
 export default function Registration({setToggle} : {setToggle: Dispatch<SetStateAction<boolean>>}) {
+
+  const authContext = useContext(AuthContext);
+  if (!authContext) {
+    throw new Error("AuthContext must be used within an AuthProvider");
+  }
+
+  const { createUser , user } = authContext;
+  const router = useRouter();
+  const showToast = useToast();
+
+  const [ eye , setEye] = useState(true);
+  const [confirmEye, setConfirmEye] = useState(true);
+  const [uploading, setUploading] = useState(false);
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
+      name: "",
       emailOrPhone: "",
       password: "",
+      confirmPassword: "",
     },
   })
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    })
+  async function onSubmit(data: z.infer<typeof FormSchema>) {
+  
+
+    try {
+      setUploading(true);
+     
+      await createUser(data.name, data.emailOrPhone, data.password);
+      showToast( "success" , " Registration successful Redirecting..." );
+      
+      if (user?.role === "admin") {
+        router.push("/dashboard");
+       
+      } else {
+        router.push("/");
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        showToast("error", (error.response?.data as { message?: string })?.message || "An error occurred");
+      } else if (error instanceof Error) {
+        showToast("error", error.message);
+      } else {
+        showToast("error", "An unknown error occurred");
+      }
+      
+    } finally {
+      setUploading(false);
+    }
   }
-  const [ eye , setEye] = useState(true);
+
 
   return (
     <div className=" w-[350px] md:w-[380px] rounded-2xl mx-auto p-5 md:p-7 border shadow-2xl ">
@@ -71,6 +117,21 @@ export default function Registration({setToggle} : {setToggle: Dispatch<SetState
         </div>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-6 mt-2">
+
+          {/* Name Field */}
+        <FormField
+          control={form.control}
+          name="name"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Name</FormLabel>
+              <FormControl>
+                <Input placeholder="Enter your name" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
           {/* Email/Phone Field */}
           <FormField
             control={form.control}
@@ -106,8 +167,41 @@ export default function Registration({setToggle} : {setToggle: Dispatch<SetState
               </FormItem>
             )}
           />
-          {/* Submit Button */}
-          <Button type="submit" className=" bg-sky-400 w-full text-[16px] shadow-lg shadow-sky-100 font-bold text-black hover:bg-sky-100">Register</Button>
+
+           {/* Confirm Password Field */}
+        <FormField
+          control={form.control}
+          name="confirmPassword"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Confirm Password</FormLabel>
+              <FormControl>
+                <div className="relative">
+                  <Input
+                    type={confirmEye ? "password" : "text"}
+                    placeholder="Confirm your password"
+                    {...field}
+                  />
+                  <p
+                    onClick={() => setConfirmEye(!confirmEye)}
+                    className="absolute right-2 top-2 cursor-pointer"
+                  >
+                    {confirmEye ? <FaEyeSlash /> : <FaEye />}
+                  </p>
+                </div>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+         {/* Submit Button */}
+        <Button
+          type="submit"
+          className="bg-sky-400 w-full text-[16px] shadow-lg shadow-sky-100 font-bold text-black hover:bg-sky-100"
+          disabled={uploading}
+        >
+          {uploading ? "Registering..." : "Register"}
+        </Button>
         </form>
       </Form>
       <h1 className=" text-xs md:text-[14px] mt-5 font-bold text-gray-500 text-center">You can modify your profile in dashboard</h1>
