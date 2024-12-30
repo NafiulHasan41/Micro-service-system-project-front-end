@@ -46,8 +46,8 @@ const start = [
 
 const microJobs = [
     {
-        title: "My jobs",
-        url: "my-jobs",
+        title: "Applied jobs",
+        url: "applied-jobs",
     },
     {
         title: "Post a Job",
