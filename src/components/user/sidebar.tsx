@@ -67,8 +67,8 @@ url: "manage-candidates",
 
 const volunteerJobs = [
 {
-title: "Joined Communities",
-url: "joined-communities",
+title: "Manage Communities",
+url: "manage-communities",
 },
 {
 title: "Start a new community",
@@ -78,6 +78,10 @@ url: "start-community",
 title: "Manage Volunteers",
 url: "manage-volunteers",
 },
+{
+    title: "Joined Communities",
+    url: "joined-communities",
+    },
 
 ]
 
