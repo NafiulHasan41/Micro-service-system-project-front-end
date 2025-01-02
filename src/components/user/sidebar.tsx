@@ -24,7 +24,7 @@ import Link from "next/link"
 const start = [
     {
         title: "Dashboard",
-        url: "dashboard",
+        url: "",
         icon: LayoutDashboard,
     },
     {
@@ -109,7 +109,7 @@ export function AppSidebar() {
                                             key={item.title}
                                         >
                                             <Link
-                                                href={`/user/${item.url}`}
+                                                href={`/dashboard/user/${item.url}`}
                                                 className="flex items-center space-x-3"
                                             >
                                                 <item.icon className="w-5 h-5 text-gray-700" />
@@ -151,7 +151,7 @@ export function AppSidebar() {
                                                     >
                                                         <Link
                                                             href={`/dashboard/user/${item.url}`}
-                                                            className="flex items-center space-x-3 text-gray-600 hover:text-gray-800"
+                                                            className="flex items-center space-x-3  font-normal text-gray-600 hover:text-sky-600 hover:font-bold hover:scale-105"
                                                         >
                                                             <p className="text-sm">{item.title}</p>
                                                         </Link>
@@ -179,7 +179,7 @@ export function AppSidebar() {
                                                     >
                                                         <Link
                                                             href={`/user/${item.url}`}
-                                                            className="flex items-center space-x-3 text-gray-600 hover:text-gray-800"
+                                                            className="flex items-center space-x-3 font-normal text-gray-600 hover:text-sky-600 hover:font-bold hover:scale-105"
                                                         >
                                                             <p className="text-sm">{item.title}</p>
                                                         </Link>

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -15,12 +15,16 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import LocationPicker from "@/components/global/location/LocationPicker";
-import { format } from "date-fns";
+import { format, set } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { Calendar } from "@/components/ui/calendar";
 import { AuthContext } from "@/provider/AuthProvider";
+import useToast from "@/hooks/useToast";
+import useAxios from "@/hooks/useAxios";
+import axios from "axios";
+
 
 // Zod Schema
 const JobBaseSchema = z.object({
@@ -53,6 +57,9 @@ export default function JobForm() {
   }
 
   const {  user  } = authContext;
+  const showToast = useToast();
+  const axiosPublic = useAxios();
+  const [loading, setLoading] = useState(false);
 
 
 
@@ -69,7 +76,7 @@ export default function JobForm() {
       description: "",
       tags: [],
       salary: "",
-      posterId: user?.id ,
+      posterId: user?.id || "" ,
       job_category: "",
       deadline: "",
     },
@@ -96,10 +103,45 @@ export default function JobForm() {
     form.setValue("tags", updatedTags);
   };
 
-  const onSubmit = (data: z.infer<typeof JobBaseSchema>) => {
-    console.log("Form submitted:", data);
-    // Add your API call or handling logic here
+  useEffect(() => {
+    if (user?.id) {
+      form.setValue("posterId", user.id);
+    }
+  }, [user?.id, form]);
+
+  const onSubmit = async (data: z.infer<typeof JobBaseSchema>) => {
+    // console.log("Form submitted:", data);
+  
+    try {
+      setLoading(true);
+       await axiosPublic.post("/api/jobs", data);
+      // console.log("Response:", response.data);
+      
+      form.reset();
+      setTags([]);
+      setNewTag("");
+      setDate(undefined);
+      setLatitude(null);
+      setLongitude(null);
+      form.setValue("posterId", user?.id || "");
+      showToast("success", "Job posted successfully");
+     
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      // console.error("An error occurred:", error);
+      if (axios.isAxiosError(error)) {
+        showToast("error", (error.response?.data as { message?: string })?.message || "An error occurred");
+      } else if (error instanceof Error) {
+        showToast("error", error.message);
+      } else {
+        showToast("error", "An unknown error occurred");
+      }
+    }
   };
+
+  // console.log("Form errors:", form.formState.errors);
+  // console.log(user?.id , typeof user?.id);
  
 
   return (
@@ -166,6 +208,29 @@ export default function JobForm() {
             </FormItem>
           )}
         />
+          <FormField
+            control={form.control}
+            name="job_category"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Job Category</FormLabel>
+                <FormControl>
+                  <select {...field} className="w-full border rounded p-2">
+                    <option value="" disabled>
+                      Select a category
+                    </option>
+                    <option value="engineering">Engineering</option>
+                    <option value="marketing">Marketing</option>
+                    <option value="design">Design</option>
+                    <option value="management">Management</option>
+                    <option value="finance">Finance</option>
+                  </select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        
   
         {/* Description */}
         <FormField
@@ -292,8 +357,11 @@ export default function JobForm() {
         />
   
         {/* Submit Button */}
-        <Button type="submit" className="w-full bg-blue-500 text-white font-bold">
-         +  Post a paid Task
+        <Button type="submit" className="w-full bg-blue-500 text-white font-bold" disabled={loading}>
+          {
+            loading ? "Posting..." : " +  Post a paid Task"
+          }
+        
         </Button>
       </form>
     </Form>
