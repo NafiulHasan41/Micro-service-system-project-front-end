@@ -18,12 +18,18 @@ export default function Navbar() {
 
 
   return (
-    <div className=' flex justify-between px-10 md:px-20 sticky z-50 top-0 w-full border-b bg-gray-200/40 p-2 md:p-5'>
-      <div className=' flex  items-center gap-1 pr-2 '>
-        <Image src="https://i.ibb.co.com/TtPv8g8/micro-service-logo.jpg" alt="logo" width={70} height={70} className=' rounded-full'/>
-        <h1 className='text-black font-bold text-[16px] '>Micro Service</h1>
+    <div className=' flex justify-between px-10 md:px-16 sticky z-50 top-0 w-full border-b  p-2 md:p-5'>
+      <Link href='/'>
+      <div className=' flex  items-center gap-1 pr-2  '>
+        <Image src={user?.imageURL ? user.imageURL : "https://i.ibb.co.com/TtPv8g8/micro-service-logo.jpg"} alt="logo" width={70} height={70} className=' hidden md:block rounded-full mr-2'/>
+        <Image src={user?.imageURL ? user.imageURL : "https://i.ibb.co.com/TtPv8g8/micro-service-logo.jpg"} alt="logo" width={50} height={50} className=' md:hidden rounded-full h-10 w-16'/>
+        <h1 className='text-black font-bold text-[16px] hidden md:block '>Micro Service</h1>
       </div>
-      <Navigation/>
+      </Link>
+      <div className=' hidden md:block'>
+         <Navigation/>
+      </div>
+     
      
       {/* this the section where user will show logout and image */}
     
@@ -31,7 +37,7 @@ export default function Navbar() {
       <div className=' border-l  border-black pl-3  hover:text-sky-500'>
         
         {
-          user ? <div>
+          user ? <div className=' mr-5'>
           <UserProfile/>
         </div> :  <Link href='/authentication'>
           <div className='flex gap-1 items-center'>
