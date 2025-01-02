@@ -18,6 +18,7 @@ import useAxios from '@/hooks/useAxios';
 import { z } from "zod";
 import axios from 'axios';
 import useToast from '@/hooks/useToast';
+import JobUpdate from './JobUpdate';
 
 const JobBaseSchema = z.object({
     _id: z.string(),
@@ -77,7 +78,7 @@ const JobManage: React.FC<JobManageProps> = ({
 
 
   return (
-    <div className="bg-white shadow-md rounded-md p-4">
+    <div className="bg-white border border-gray-300 shadow-md rounded-md p-4">
       <div className="flex justify-between items-center mb-2">
         <h2 className="text-xl font-bold">{job?.job_title}</h2>
         <div className={` px-2 py-1 rounded-md`}>
@@ -102,9 +103,10 @@ const JobManage: React.FC<JobManageProps> = ({
         </button>
         </Link>
         <div className="flex">
-          <button className="bg-gray-200 hover:bg-gray-300 text-gray-900 font-bold py-2 px-4 rounded-md">
+          {/* <button className="bg-gray-200 hover:bg-gray-300 text-gray-900 font-bold py-2 px-4 rounded-md">
           <TiEdit/>
-          </button>
+          </button> */}
+           <JobUpdate job={job} onSave={refreshJobs} />
           <button onClick={()=>handleDelete()}   className="bg-gray-200 hover:bg-gray-300  font-bold py-2 px-4 rounded-md ml-2 text-red-500">
             {
                 isDeleting ? "Deleting..." : <RiDeleteBin5Fill/>

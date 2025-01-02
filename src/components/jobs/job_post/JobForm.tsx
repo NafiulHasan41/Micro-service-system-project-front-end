@@ -183,7 +183,7 @@ export default function JobForm() {
               name="salary"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Salary</FormLabel>
+                  <FormLabel>Salary (In Taka)</FormLabel>
                   <FormControl>
                     <Input placeholder="Enter salary" {...field} />
                   </FormControl>
