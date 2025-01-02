@@ -152,20 +152,32 @@ export default function ServiceProviderForm() {
             )}
           />
 
-          {/* Category */}
+          {/* Service Category */}
           <FormField
-            control={form.control}
-            name="category"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Category</FormLabel>
-                <FormControl>
-                  <Input placeholder="Enter category" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+              control={form.control}
+              name="category"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Category</FormLabel>
+                  <FormControl>
+                    <select {...field} className="w-full border rounded p-2">
+                      <option value="" disabled>
+                        Select a category
+                      </option>
+                      <option value="cleaning">Cleaning</option>
+                      <option value="plumbing">Plumbing</option>
+                      <option value="electrician">Electrician</option>
+                      <option value="gardening">Gardening</option>
+                      <option value="tutoring">Tutoring</option>
+                      <option value="catering">Catering</option>
+                      <option value="transport">Transport</option>
+                      <option value="pet_services">Pet Services</option>
+                    </select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
           {/* Description */}
           <FormField
