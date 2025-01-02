@@ -120,7 +120,7 @@ const UserProfile = () => {
                    
                 </DropdownMenuItem>
                 <DropdownMenuItem>
-                    <Link href="/about_us">
+                    <Link href="/about">
                     <div className="flex items-center space-x-2">
                          <FcAbout />
                         <span>About us</span>

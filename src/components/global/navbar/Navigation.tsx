@@ -46,7 +46,7 @@ export default function Navigation() {
             </NavigationMenuItem>
           
             <NavigationMenuItem>
-              <Link href="/docs" legacyBehavior passHref>
+              <Link href="/about" legacyBehavior passHref>
                 <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                  About us
                 </NavigationMenuLink>
