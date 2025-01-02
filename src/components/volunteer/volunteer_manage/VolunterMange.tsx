@@ -7,18 +7,12 @@ import { RiDeleteBin5Fill } from "react-icons/ri";
 import { TiEdit } from "react-icons/ti";
 import { FaRegCalendarAlt } from "react-icons/fa";
 
-import Link from 'next/link';
-
-// Custom Hooks
-import useAxios from '@/hooks/useAxios';
 
 
 
 // Zod Schema
 import { z } from "zod";
-import axios from 'axios';
-import useToast from '@/hooks/useToast';
-
+import Link from 'next/link';
 const JobBaseSchema = z.object({
     _id: z.string(),
   type: z.enum(["paid", "volunteer"]),
@@ -40,40 +34,13 @@ type Job = z.infer<typeof JobBaseSchema>;
 
 interface JobManageProps {
   job: Job;
-  refreshJobs: () => void;
 }
-const JobManage: React.FC<JobManageProps> = ({
-    job ,
-    refreshJobs
+const VolunteerManage: React.FC<JobManageProps> = ({
+    job
 }) => {
   
     const isExpired = job.deadline ? new Date() > new Date(job.deadline) : false;
     const status = isExpired ? "Expired" : "Active";
-    
-    const axiosInstance = useAxios();
-    const showToast = useToast();
-    const [isDeleting, setIsDeleting] = React.useState(false);
-
-    const handleDelete = async () => {
-        try {
-            setIsDeleting(true);
-           await axiosInstance.delete(`/api/jobs/${job._id}`);
-        //   console.log(res.data);
-            showToast("success", "Job deleted successfully");
-            refreshJobs();
-            setIsDeleting(false);
-        } catch (error) {
-            setIsDeleting(false);
-        //   console.log(error);
-          if (axios.isAxiosError(error)) {
-            showToast("error", (error.response?.data as { message?: string })?.message || "An error occurred");
-          } else if (error instanceof Error) {
-            showToast("error", error.message);
-          } else {
-            showToast("error", "An unknown error occurred");
-          }
-        }
-    }
 
 
   return (
@@ -105,11 +72,8 @@ const JobManage: React.FC<JobManageProps> = ({
           <button className="bg-gray-200 hover:bg-gray-300 text-gray-900 font-bold py-2 px-4 rounded-md">
           <TiEdit/>
           </button>
-          <button onClick={()=>handleDelete()}   className="bg-gray-200 hover:bg-gray-300  font-bold py-2 px-4 rounded-md ml-2 text-red-500">
-            {
-                isDeleting ? "Deleting..." : <RiDeleteBin5Fill/>
-            }
-          
+          <button className="bg-gray-200 hover:bg-gray-300  font-bold py-2 px-4 rounded-md ml-2 text-red-500">
+          <RiDeleteBin5Fill/>
           </button>
         </div>
       </div>
@@ -117,4 +81,4 @@ const JobManage: React.FC<JobManageProps> = ({
   );
 };
 
-export default JobManage;
+export default VolunteerManage;

@@ -32,7 +32,7 @@ export default function ShowJob() {
     const showToast = useToast();
     const fetcher = (url : string) => axiosInstance.get(url).then((res) => res.data)
 
-    const { data: jobs, error, isValidating } = useSWR(
+    const { data: jobs, error, isValidating , mutate } = useSWR(
         '/api/jobs/user/jobs',
         fetcher
     )
@@ -45,11 +45,11 @@ export default function ShowJob() {
     if (error) return <div>Error loading data</div>;
 //    console.log(jobs.data)
   return (
-    <div>
+    <div className=' grid grid-cols-1 gap-2'>
 
         {
             jobs?.data?.map((job:Job) => (
-                job.type === 'paid' && <JobManage key={job._id} job={job} />
+                job.type === 'paid' && <JobManage key={job._id} job={job} refreshJobs={mutate} />
             ) )
         }
       
