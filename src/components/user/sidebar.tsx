@@ -1,6 +1,6 @@
 import { Bookmark, Briefcase, Calendar, HeartHandshake, Home, Inbox, LayoutDashboard, LogOut, Search, Settings, Star }
 from "lucide-react"
-
+import { MdMedicalServices } from "react-icons/md";
 import {
 Collapsible,
 CollapsibleContent,
@@ -81,9 +81,19 @@ url: "manage-volunteers",
 {
     title: "Joined Communities",
     url: "joined-communities",
-    },
+},
 
 ]
+const Services = [
+    {
+    title: "Manage Services",
+    url: "manage-services",
+    },
+    {
+    title: "Create a new service",
+    url: "create-service",
+    },  
+    ]
 
 const account = [
 {
@@ -170,6 +180,29 @@ return (
                                     </CollapsibleTrigger>
                                     <CollapsibleContent>
                                         {volunteerJobs.map((item) => (
+                                        <SidebarMenuSub className="py-2 pl-8" key={item.title}>
+                                            <Link href={`/dashboard/user/${item.url}`}
+                                                className="flex items-center space-x-3 font-normal text-gray-600 hover:text-sky-600 hover:font-bold hover:scale-105">
+                                            <p className="text-sm">{item.title}</p>
+                                            </Link>
+                                        </SidebarMenuSub>
+                                        ))}
+                                    </CollapsibleContent>
+                                </SidebarMenuItem>
+                            </Collapsible>
+                            {/* for service provider */}
+                            <Collapsible>
+                                <SidebarMenuItem className="mt-2 p-2 rounded-md hover:bg-gray-200 transition">
+                                    <CollapsibleTrigger>
+                                        <div className="flex items-center space-x-3">
+                                            <MdMedicalServices className="w-5 h-5 text-gray-700" />
+                                            <p className="text-base text-gray-700 leading-none">
+                                                Service Provider
+                                            </p>
+                                        </div>
+                                    </CollapsibleTrigger>
+                                    <CollapsibleContent>
+                                        {Services.map((item) => (
                                         <SidebarMenuSub className="py-2 pl-8" key={item.title}>
                                             <Link href={`/dashboard/user/${item.url}`}
                                                 className="flex items-center space-x-3 font-normal text-gray-600 hover:text-sky-600 hover:font-bold hover:scale-105">
