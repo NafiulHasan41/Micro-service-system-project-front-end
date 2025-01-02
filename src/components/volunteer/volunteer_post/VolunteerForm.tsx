@@ -43,10 +43,10 @@ const JobBaseSchema = z.object({
   job_category: z.string().nonempty("Job category is required"),
 });
 
-export default function JobForm() {
+export default function VolunteerForm() {
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
-  const [type, setType] = useState<"paid" | "volunteer">("paid");
+  const [type, setType] = useState<"paid" | "volunteer">("volunteer");
   const [tags, setTags] = useState<string[]>([]);
   const [newTag, setNewTag] = useState("");
   const [date, setDate] = useState<Date | undefined>();
@@ -66,7 +66,7 @@ export default function JobForm() {
   const form = useForm<z.infer<typeof JobBaseSchema>>({
     resolver: zodResolver(JobBaseSchema),
     defaultValues: {
-      type: "paid",
+      type: "volunteer",
       location: {
         type: "Point",
         coordinates: [],
@@ -124,7 +124,7 @@ export default function JobForm() {
       setLatitude(null);
       setLongitude(null);
       form.setValue("posterId", user?.id || "");
-      showToast("success", "Job posted successfully");
+      showToast("success", "Volunteer community created successfully");
      
       setLoading(false);
     } catch (error) {
@@ -167,7 +167,7 @@ export default function JobForm() {
                     }}
                     className="w-full border rounded p-2"
                   >
-                    <option value="paid">Paid</option>
+                     <option value="volunteer">Volunteer</option>
                   
                   </select>
                 </FormControl>
@@ -176,22 +176,7 @@ export default function JobForm() {
             )}
           />
   
-          {/* Salary (conditional) */}
-          {type === "paid" && (
-            <FormField
-              control={form.control}
-              name="salary"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Salary</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enter salary" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          )}
+    
         </div>
   
         {/* Job Title */}
@@ -219,21 +204,7 @@ export default function JobForm() {
                     <option value="" disabled>
                       Select a category
                     </option>
-                    <option value="engineering">Engineering</option>
-                    <option value="marketing">Marketing</option>
-                    <option value="design">Design</option>
-                    <option value="management">Management</option>
-                    <option value="finance">Finance</option>
-                    <option value="micro_jobs">Micro Jobs</option>
-                    <option value="customer_service">Customer Service</option>
-                    <option value="writing">Writing</option>
-                    <option value="data_entry">Data Entry</option>
-                    <option value="it_support">IT Support</option>
-                    <option value="sales">Sales</option>
-                    <option value="consulting">Consulting</option>
-                    <option value="education">Education</option>
-                    <option value="healthcare">Healthcare</option>
-                    <option value="construction">Construction</option>
+                    <option value="volunteer">Volunteer</option>
                   </select>
                 </FormControl>
                 <FormMessage />
@@ -370,7 +341,7 @@ export default function JobForm() {
         {/* Submit Button */}
         <Button type="submit" className="w-full bg-blue-500 text-white font-bold" disabled={loading}>
           {
-            loading ? "Posting..." : " +  Post a paid Task"
+            loading ? "Posting..." : " +  Post a volunteer Task"
           }
         
         </Button>
