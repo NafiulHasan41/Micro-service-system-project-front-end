@@ -133,12 +133,12 @@ const UserProfile = () => {
                 
                 {/* Menu Items */}
                 <DropdownMenuItem>
-                    <button>
+                    <Link href={"dashboard/user"}>
                     <div className="flex items-center space-x-2">
                          <MdDashboard />
                         <span>Dashboard</span>
                     </div>
-                    </button>
+                    </Link>
                    
                 </DropdownMenuItem>
                 <DropdownMenuItem>

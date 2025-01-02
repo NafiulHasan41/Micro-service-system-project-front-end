@@ -150,7 +150,7 @@ export function AppSidebar() {
                                                         key={item.title}
                                                     >
                                                         <Link
-                                                            href={`/user/${item.url}`}
+                                                            href={`/dashboard/user/${item.url}`}
                                                             className="flex items-center space-x-3 text-gray-600 hover:text-gray-800"
                                                         >
                                                             <p className="text-sm">{item.title}</p>
